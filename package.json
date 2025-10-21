@@ -1,0 +1,42 @@
+{
+  "name": "skillync_be",
+  "version": "1.0.0",
+  "description": "SkilLync is a digital marketplace that bridges the gap between skilled professionals and businesses seeking top talent. We empower freelancers, creators, and experts to showcase their skills, connect with employers, and build sustainable careers, all in one dynamic platform.",
+  "main": "dist/server.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+  },
+  "keywords": [],
+  "author": "Unorji Kingsley",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "prisma": "^6.17.1",
+    "redis": "^5.8.3",
+    "socket.io": "^4.8.1",
+    "stripe": "^19.1.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.9.1",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
