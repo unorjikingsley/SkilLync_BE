@@ -19,7 +19,8 @@ model User {
   role           Role
   email          String   @unique
   password       String
-  fullName       String
+  firstName      String
+  lastName       String
   bio            String?
   profileImage   String?
   skills         Skill[]  @relation("UserSkills")

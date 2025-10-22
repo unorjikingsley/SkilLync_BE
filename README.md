@@ -3,5 +3,10 @@ SkilLync is a digital marketplace that bridges the gap between skilled professio
 
 ERD Diagram - https://app.eraser.io/workspace/TmMci8Ut277pDVDwHoJR?origin=share
 
-npm run prisma:migrate
-npm run prisma:generate
+Run Prisma
+1. npx prisma init
+2. npx prisma migrate dev --name init (npm run prisma:migrate) change - npm run prisma:migrate -- --name add-or-update
+3. npx prisma generate (npm run prisma:generate)
+
+
+
