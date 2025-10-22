@@ -3,5 +3,5 @@ SkilLync is a digital marketplace that bridges the gap between skilled professio
 
 ERD Diagram - https://app.eraser.io/workspace/TmMci8Ut277pDVDwHoJR?origin=share
 
-npm run prisma:generate
 npm run prisma:migrate
+npm run prisma:generate
