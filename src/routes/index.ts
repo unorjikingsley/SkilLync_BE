@@ -5,6 +5,7 @@ import gigRoutes from './gig.route'
 import projectRoutes from './project.route';
 import proposalRoutes from './proposal.route';
 import contractRoutes from './contract.route';
+import messageRoutes from './message.route';
 
 const router = Router()
 
@@ -17,6 +18,7 @@ apiRouter.use('/gigs', gigRoutes)
 apiRouter.use('/projects', projectRoutes);
 apiRouter.use('/proposals', proposalRoutes);
 apiRouter.use('/contracts', contractRoutes);
+apiRouter.use('/messages', messageRoutes);
 
 // Mount the API router under /api
 router.use('/api', apiRouter)
