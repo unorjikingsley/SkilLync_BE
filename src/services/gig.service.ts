@@ -1,7 +1,5 @@
-import { PrismaClient, Gig } from '@prisma/client';
-// import { Gig } from '@prisma/client'
-
-const prisma = new PrismaClient();
+import { Gig } from '@prisma/client';
+import prisma from "../db.config";
 
 interface CreateGigInput {
   title: string

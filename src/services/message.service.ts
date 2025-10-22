@@ -1,7 +1,5 @@
-// import prisma from '../config/db.config'
-import { PrismaClient, Message } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Message } from "@prisma/client";
+import prisma from "../db.config";
 
 interface SendMessageInput {
   senderId: string

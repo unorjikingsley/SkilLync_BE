@@ -1,7 +1,5 @@
-import { PrismaClient, Project } from "@prisma/client";
-// import { Project } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { Project, ProjectStatus } from "@prisma/client";
+import prisma from "../db.config";
 
 interface CreateProjectInput {
   title: string;
@@ -11,7 +9,10 @@ interface CreateProjectInput {
 }
 
 export const createProject = async (data: CreateProjectInput): Promise<Project> => {
-  return prisma.project.create({ data });
+  return prisma.project.create({ data: {
+    ...data,
+    status: ProjectStatus.OPEN,
+  } });
 };
 
 export const getAllProjects = async (): Promise<Project[]> => {

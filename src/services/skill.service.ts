@@ -1,7 +1,5 @@
-import { PrismaClient, Skill } from '@prisma/client';
-// import { Skill } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../db.config'
+import { Skill } from '@prisma/client'
 
 // Create a new skill
 export const createSkill = async (name: string): Promise<Skill> => {

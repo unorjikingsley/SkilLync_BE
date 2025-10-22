@@ -9,8 +9,8 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    const { email, fullName, password } = req.body
-    if (!email || !fullName || !password)
+    const { email, firstName, lastName, password } = req.body
+    if (!email || !firstName || !lastName || !password)
       throw new BadRequestError('Missing required fields')
 
     const user = await userService.createUser(req.body)
@@ -21,7 +21,7 @@ export const createUser = async (
       statusCode: 201,
     })
   } catch (error) {
-    console.error('Error creating user:', error)
+    console.log('Error creating user:', error)
     next(error)
   }
 }
@@ -97,7 +97,7 @@ export const deleteUser = async (
 ) => {
   try {
     const { id } = req.params
-    if (!id) throw new BadRequestError('Missing user id')
+    if (!id) throw new BadRequestError('Missing user ID')
 
     const user = await userService.deleteUser(id)
     if (!user) throw new NotFoundError('User not found')
@@ -108,7 +108,7 @@ export const deleteUser = async (
       message: 'User deleted successfully',
     })
   } catch (error) {
-    console.error('Error getting a specific user:', error)
+    console.error('Error deleting a specific user:', error)
     next(error)
   }
 }

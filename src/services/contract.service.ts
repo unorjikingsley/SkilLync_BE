@@ -1,7 +1,5 @@
-import { PrismaClient, Contract, ContractStatus } from '@prisma/client';
-// import prisma from '../db.config';
-
-const prisma = new PrismaClient();
+import { Contract, ContractStatus } from '@prisma/client';
+import prisma from '../db.config';
 
 interface CreateContractInput {
   projectId: string

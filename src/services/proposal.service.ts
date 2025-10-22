@@ -1,7 +1,5 @@
-import { PrismaClient, ProposalStatus, Proposal } from "@prisma/client";
-// import { Proposal } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { ProposalStatus, Proposal } from "@prisma/client";
+import prisma from "../db.config";
 
 interface SubmitProposalInput {
   bidAmount: number;
