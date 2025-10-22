@@ -3,6 +3,7 @@ import userRoutes from './user.route'
 import skillRoutes from './skill.route'
 import gigRoutes from './gig.route'
 import projectRoutes from './project.route';
+import proposalRoutes from './proposal.route';
 
 const router = Router()
 
@@ -13,6 +14,7 @@ apiRouter.use('/users', userRoutes)
 apiRouter.use('/skills', skillRoutes)
 apiRouter.use('/gigs', gigRoutes)
 apiRouter.use('/projects', projectRoutes);
+apiRouter.use('/proposals', proposalRoutes);
 
 // Mount the API router under /api
 router.use('/api', apiRouter)
