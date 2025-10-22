@@ -1,5 +1,5 @@
-import { PrismaClient, ProposalStatus } from "@prisma/client";
-import { Proposal } from "@prisma/client";
+import { PrismaClient, ProposalStatus, Proposal } from "@prisma/client";
+// import { Proposal } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -28,6 +28,7 @@ export const getProposalById = async (id: string): Promise<Proposal | null> => {
 };
 
 export const updateProposal = async (id: string, data: Partial<Proposal>): Promise<Proposal | null> => {
+  // data: Partial<Proposal> → Partial is a TypeScript utility type that makes all fields of Proposal optional.
   return prisma.proposal.update({ where: { id }, data });
 };
 

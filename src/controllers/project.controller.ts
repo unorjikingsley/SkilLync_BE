@@ -1,7 +1,7 @@
 import * as projectService from '../services/project.service';
-import { successMessage } from '@utils/successMessage';
+import { successMessage } from '../utils/successMessage';
 import { Request, Response, NextFunction } from 'express';
-import { BadRequestError, NotFoundError } from '@utils/errorHandler';
+import { BadRequestError, NotFoundError } from '../utils/errorHandler';
 
 export const createProject = async (
   req: Request,

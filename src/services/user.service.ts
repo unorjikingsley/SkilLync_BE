@@ -1,11 +1,11 @@
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient, Prisma, User } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export const createUser = async (data: Prisma.UserCreateInput) => {
+export const createUser = async (data: Prisma.UserCreateInput): Promise<User> => {
   return prisma.user.create({ data })
 }
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (): Promise<User[]> => {
   return prisma.user.findMany({
     where: { deletedAt: null },
   })
