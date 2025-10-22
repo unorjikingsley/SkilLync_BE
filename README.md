@@ -9,4 +9,4 @@ Run Prisma
 2. npx prisma migrate dev --name init (npm run prisma:migrate) change - npm run prisma:migrate -- --name add-or-update
 3. npx prisma generate (npm run prisma:generate)
 
-studio - npx prisma studio --schema=./src/prisma/schema.prisma
+prisma studio - npx prisma studio --schema=./src/prisma/schema.prisma

@@ -1,6 +1,7 @@
 import { BadRequestError } from '../utils/errorHandler';
 import prisma from '../db.config';
 import { User, Prisma } from '@prisma/client';
+import { findActiveUserByEmail, findActiveUserById } from '../utils/user.utils';
 // import bcrypt from 'bcryptjs';
 
 /**
@@ -10,45 +11,42 @@ import { User, Prisma } from '@prisma/client';
  */
 
 export const createUser = async (data: Prisma.UserCreateInput): Promise<User> => {
-  const existingUser = await prisma.user.findUnique({
-    where: { 
-      email: data.email,
-      deletedAt: null
-    },
-  })
+  try {
+    const existingUser = await findActiveUserByEmail(data.email)
 
-  if (existingUser) {
-    throw new BadRequestError('User with this email already exists')
+    if (existingUser) {
+      throw new BadRequestError('User with this email already exists')
+    }
+
+    // Hash Password
+    // if (data.password){
+    //   data.password = await bcrypt.hash(data.password, 10);
+    // }
+
+    const newUser = await prisma.user.create({ data })
+
+    return newUser
+  } catch (error) {
+    console.error('Create User Error:', error)
+    throw error //controller handles error
   }
-
-  // Hash Password
-  // if (data.password){
-  //   data.password = await bcrypt.hash(data.password, 10);
-  // }
-
-  return prisma.user.create({ data })
 }
 
 export const getAllUsers = async (): Promise<User[]> => {
-  return prisma.user.findMany({
-    where: { deletedAt: null },
-  })
+  try {
+    return prisma.user.findMany({
+      where: { deletedAt: null },
+    })
+  } catch (error) {
+    console.error('Get All Users Error:', error)
+    throw error
+  }
 }
 
 export const getUserById = async (id: string): Promise<User | null> => {
   try {
-    const getUser = await prisma.user.findUnique({
-      where: { id },
-    })
+    const user = await findActiveUserById(id);
 
-    if (!getUser || getUser.deletedAt) {
-      return null
-    }
-
-    const user = await prisma.user.findFirst({
-      where: { id, deletedAt: null },
-    })
-  
     return user
   } catch (error) {
     console.error('Delete User Error:', error)
@@ -61,11 +59,9 @@ export const updateUser = async (
   data: Prisma.UserUpdateInput
 ): Promise<User | null> => {
   try {
-    const existingUser = await prisma.user.findUnique({
-      where: { id },
-    })
+    const existingUser = await findActiveUserById(id);
 
-    if (!existingUser || existingUser.deletedAt) {
+    if (!existingUser) {
       return null // No user found or already deleted
     }
 
@@ -83,11 +79,9 @@ export const updateUser = async (
 export const deleteUser = async (id: string): Promise<User | null> => {
   try {
     // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { id },
-    })
+    const existingUser = await findActiveUserById(id);
 
-    if (!existingUser || existingUser.deletedAt) {
+    if (!existingUser) {
       return null // No user found or already deleted
     }
 
