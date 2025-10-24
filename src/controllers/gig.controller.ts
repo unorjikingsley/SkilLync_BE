@@ -62,7 +62,9 @@ export const getGigById = async (
     const { id } = req.params
     if (!id) throw new BadRequestError('Gig ID is required')
 
-    const gig = await gigService.getGigById(id)
+    const gig = await gigService.getGigById(id);
+    if (!gig) throw new NotFoundError('Gig not found');
+
     return successMessage({
       res,
       data: gig,
@@ -84,6 +86,8 @@ export const getGigsByFreelancer = async (
     if (!freelancerId) throw new BadRequestError('Freelancer ID is required')
 
     const gigs = await gigService.getGigsByFreelancer(freelancerId)
+    if (!gigs.length) throw new NotFoundError('No gigs found for this freelancer');
+
     return successMessage({
       res,
       data: gigs,
@@ -105,6 +109,8 @@ export const updateGig = async (
     if (!id) throw new BadRequestError('Gig ID is required')
 
     const updatedGig = await gigService.updateGig(id, req.body)
+    if (!updatedGig) throw new NotFoundError('Gig not found');
+
     return successMessage({
       res,
       data: updatedGig,
@@ -125,7 +131,9 @@ export const deleteGig = async (
     const { id } = req.params
     if (!id) throw new BadRequestError('Gig ID is required')
 
-    const deletedGig = await gigService.deleteGig(id)
+    const deletedGig = await gigService.deleteGig(id);
+    if (!deletedGig) throw new NotFoundError('Gig not found');
+
     return successMessage({
       res,
       data: deletedGig,

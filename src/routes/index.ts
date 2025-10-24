@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import userRoutes from './user.route'
-import skillRoutes from './skill.route'
-import gigRoutes from './gig.route'
+import { Router } from 'express';
+import userRoutes from './user.route';
+import skillRoutes from './skill.route';
+import gigRoutes from './gig.route';
 import projectRoutes from './project.route';
 import proposalRoutes from './proposal.route';
 import contractRoutes from './contract.route';

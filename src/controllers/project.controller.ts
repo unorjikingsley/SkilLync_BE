@@ -2,6 +2,7 @@ import * as projectService from '../services/project.service';
 import { successMessage } from '../utils/successMessage';
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError, NotFoundError } from '../utils/errorHandler';
+import { parse } from 'path';
 
 export const createProject = async (
   req: Request,
@@ -16,9 +17,10 @@ export const createProject = async (
     const project = await projectService.createProject({
       title,
       description,
-      budget,
+      budget: parseFloat(budget),
       clientId,
     })
+
     return successMessage({
       res,
       data: project,
@@ -69,6 +71,28 @@ export const getProjectById = async (
   }
 };
 
+export const getProjectsByClient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { clientId } = req.params;
+    if (!clientId) throw new BadRequestError('Missing client id');
+
+    const projects = await projectService.getProjectsByClient(clientId);
+    if (!projects.length) throw new NotFoundError('No projects found for this client');
+    
+    return successMessage({
+      res,
+      message: 'Client projects retrieved successfully',
+      data: projects
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateProject = async (
   req: Request,
   res: Response,
@@ -100,15 +124,37 @@ export const deleteProject = async (
     const { id } = req.params;
     if (!id) throw new BadRequestError('Missing project id');
 
-    const project = await projectService.deleteProject(id);
-    if (!project) throw new NotFoundError('Project not found');
+    const deletedProject = await projectService.deleteProject(id);
+    if (!deletedProject) throw new NotFoundError('Project not found');
 
     return successMessage({
       res,
-      data: project,
+      data: deletedProject,
       message: 'Project deleted successfully',
     });
   } catch (error) {
     next(error);
   }
 };
+
+export const searchProjects = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { query } = req.query
+    if (!query) throw new Error('Search query is required')
+
+    const projects = await projectService.searchProjects(query as string)
+    if (!projects.length) throw new NotFoundError('No projects found matching your search');
+
+    return successMessage({
+      res,
+      data: projects,
+      message: 'Projects found successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
