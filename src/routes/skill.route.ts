@@ -22,6 +22,7 @@ router.delete('/remove/:skillId', skillController.removeSkillFromUser)
 router.put('/:skillId', skillController.updateSkillName)
 
 // Searching skills auto-suggest
-router.get('/search', skillController.searchSkills)
+router.get('/search', skillController.searchSkills) // query parameter style
+// router.get('/search/:query', gigController.searchSkills) // URL parameter style
 
 export default router;

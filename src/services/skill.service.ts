@@ -80,7 +80,7 @@ export const assignSkillToUser = async (userId: string, skillId: string) => {
   })
 }
 
-// ✅ 4. Get all skills of a specific user
+// Get all skills of a specific user
 export const getSkillsByUserId = async (userId: string): Promise<Skill[]> => {
   const user = await prisma.user.findFirst({
     where: { id: userId, deletedAt: null },
@@ -91,7 +91,7 @@ export const getSkillsByUserId = async (userId: string): Promise<Skill[]> => {
   return user.skills;
 }
 
-// ✅ 5. Remove (disconnect) a skill from user’s profile
+// Remove (disconnect) a skill from user’s profile
 export const removeSkillFromUser = async (userId: string, skillId: string): Promise<User> => {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -113,7 +113,7 @@ export const removeSkillFromUser = async (userId: string, skillId: string): Prom
   })
 }
 
-// ✅ 6. Update a skill name (admin only)
+// Update a skill name (admin only)
 export const updateSkillName = async (
   skillId: string,
   newName: string
@@ -134,10 +134,28 @@ export const updateSkillName = async (
 
     return await prisma.skill.update({
       where: { id: skillId },
-      data: { name: formattedName },
+      data: { name: formattedName || existingSkill.name },
     })
   } catch (error: any) {
     throw new Error(error.message || 'Failed to update skill')
   }
 }
 
+export const searchSkills = async (query: string): Promise<Skill[]> => {
+  if (!query.trim()) throw new BadRequestError('Search skill cannot be empty')
+
+  const skill = await prisma.skill.findMany({
+    where: {
+      name: {
+        contains: query.trim().toUpperCase(), // match partial text in uppercase
+        mode: 'insensitive', // case-insensitive search
+      },
+    },
+    orderBy: { name: 'desc' },
+  })
+
+  if (!skill.length)
+    throw new NotFoundError('No gigs found matching your search')
+
+  return skill;
+}

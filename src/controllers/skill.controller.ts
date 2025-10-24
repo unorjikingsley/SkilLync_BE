@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import * as skillService from '../services/skill.service'
 import { successMessage } from '../utils/successMessage'
 import { BadRequestError, NotFoundError } from '../utils/errorHandler'
-import prisma from '../db.config'
+// import prisma from '../db.config'/
 
 // Create skill
 export const createSkill = async (
@@ -27,30 +27,31 @@ export const createSkill = async (
   }
 }
 
-// skill.controller.ts
-export const searchSkills = async (req: Request, res: Response, next: NextFunction) => {
+// search skills
+export const searchSkills = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const query = req.query.q as string
-    if (!query || query.trim() === '') {
-      return res.status(400).json({ error: 'Search query is required' })
-    }
+    const { query } = req.query // example: /api/skills/search?q=react
+    if (!query) throw new BadRequestError('Search query is required')
 
-    const skills = await prisma.skill.findMany({
-      where: {
-        name: {
-          contains: query.trim(),
-          mode: 'insensitive',
-        },
-      },
-      take: 10, // limit results
+    // const query = req.params.query?.trim() // send your search term as a URL parameter (/search/:query)
+    // if (!query) throw new BadRequestError('Search query is required')
+
+    const skills = await skillService.searchSkills(query as string)
+    if (!skills.length)
+      throw new NotFoundError('No skill found matching your search')
+    return successMessage({
+      res,
+      data: skills,
+      message: 'Skills search completed successfully',
     })
-
-    return res.status(200).json({ skills })
   } catch (error) {
     next(error)
   }
 }
-
 
 // List all skills
 export const getAllSkills = async (
