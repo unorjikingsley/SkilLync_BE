@@ -1,74 +1,156 @@
-import { Request, Response, NextFunction } from 'express';
-import * as proposalService from '../services/proposal.service';
-import { successMessage } from '../utils/successMessage';
-import { BadRequestError, NotFoundError } from '../utils/errorHandler';
+import { Request, Response, NextFunction } from 'express'
+import * as proposalService from '../services/proposal.service'
+import { successMessage } from '../utils/successMessage'
+import { BadRequestError } from '../utils/errorHandler'
 
-// Submit a proposal
-export const submitProposal = async (req: Request, res: Response, next: NextFunction) => {
+// ✅ Create Proposal
+export const createProposal = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { bidAmount, coverLetter, freelancerId, projectId } = req.body;
-    if (!bidAmount || !coverLetter || !freelancerId || !projectId) {
-      throw new BadRequestError('bidAmount, freelancerId, and projectId are required');
-    }
-
-    const proposal = await proposalService.submitProposal({ bidAmount, coverLetter, freelancerId, projectId });
-    return successMessage({ res, data: proposal, message: 'Proposal submitted successfully', statusCode: 201 });
+    const { bidAmount, coverLetter, freelancerId, projectId } = req.body
+    const proposal = await proposalService.createProposal({
+      bidAmount,
+      coverLetter,
+      freelancerId,
+      projectId,
+    })
+    return successMessage({
+      res,
+      data: proposal,
+      message: 'Proposal created successfully',
+      statusCode: 201,
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-// List all proposals
-export const getAllProposals = async (_req: Request, res: Response, next: NextFunction) => {
+// ✅ Get all proposals
+export const getAllProposals = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const proposals = await proposalService.getAllProposals();
-    return successMessage({ res, data: proposals, message: 'Proposals retrieved successfully' });
+    const proposals = await proposalService.getAllProposals()
+    return successMessage({
+      res,
+      data: proposals,
+      message: 'Proposals retrieved successfully',
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-// Get proposal by ID
-export const getProposalById = async (req: Request, res: Response, next: NextFunction) => {
+// ✅ Get proposal by ID
+export const getProposalById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
-    if (!id) throw new BadRequestError('Proposal ID is required');
+    const { id } = req.params
+    if (!id) throw new BadRequestError('Proposal ID is required')
 
-    const proposal = await proposalService.getProposalById(id);
-    if (!proposal) throw new NotFoundError('Proposal not found');
-
-    return successMessage({ res, data: proposal, message: 'Proposal retrieved successfully' });
+    const proposal = await proposalService.getProposalById(id)
+    return successMessage({
+      res,
+      data: proposal,
+      message: 'Proposal retrieved successfully',
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-// Update proposal
-export const updateProposal = async (req: Request, res: Response, next: NextFunction) => {
+// ✅ Get proposals by freelancer
+export const getProposalsByFreelancer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
-    if (!id) throw new BadRequestError('Proposal ID is required');
+    const { freelancerId } = req.params
+    if (!freelancerId) throw new BadRequestError('Freelancer ID is required')
 
-    const proposal = await proposalService.updateProposal(id, req.body);
-    if (!proposal) throw new NotFoundError('Proposal not found');
-
-    return successMessage({ res, data: proposal, message: 'Proposal updated successfully' });
+    const proposals = await proposalService.getProposalsByFreelancer(
+      freelancerId
+    )
+    return successMessage({
+      res,
+      data: proposals,
+      message: 'Freelancer proposals retrieved successfully',
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-// Delete proposal
-export const deleteProposal = async (req: Request, res: Response, next: NextFunction) => {
+// ✅ Get proposals by project
+export const getProposalsByProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
-    if (!id) throw new BadRequestError('Proposal ID is required');
+    const { projectId } = req.params
+    if (!projectId) throw new BadRequestError('Project ID is required')
 
-    const proposal = await proposalService.deleteProposal(id);
-    if (!proposal) throw new NotFoundError('Proposal not found');
-
-    return successMessage({ res, data: proposal, message: 'Proposal deleted successfully' });
+    const proposals = await proposalService.getProposalsByProject(projectId)
+    return successMessage({
+      res,
+      data: proposals,
+      message: 'Project proposals retrieved successfully',
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
+
+// ✅ Update proposal status
+export const updateProposalStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params
+    const { status } = req.body
+    if (!id || !status)
+      throw new BadRequestError('Proposal ID and status are required')
+
+    const updated = await proposalService.updateProposalStatus(id, status)
+    return successMessage({
+      res,
+      data: updated,
+      message: 'Proposal status updated successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// ✅ Delete proposal
+export const deleteProposal = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params
+    if (!id) throw new BadRequestError('Proposal ID is required')
+
+    const deleted = await proposalService.deleteProposal(id)
+    return successMessage({
+      res,
+      data: deleted,
+      message: 'Proposal deleted successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import * as contractService from '../services/contract.service'
 import { successMessage } from '../utils/successMessage'
-import { BadRequestError, NotFoundError } from '../utils/errorHandler'
+import { BadRequestError } from '../utils/errorHandler'
 
-// Create contract
+// ✅ Create contract
 export const createContract = async (
   req: Request,
   res: Response,
@@ -11,12 +11,6 @@ export const createContract = async (
 ) => {
   try {
     const { projectId, freelancerId, clientId, escrowAmount } = req.body
-    if (!projectId || !freelancerId || !clientId || escrowAmount == null) {
-      throw new BadRequestError(
-        'projectId, freelancerId, clientId, and escrowAmount are required'
-      )
-    }
-
     const contract = await contractService.createContract({
       projectId,
       freelancerId,
@@ -34,7 +28,7 @@ export const createContract = async (
   }
 }
 
-// List all contracts
+// ✅ Get all contracts
 export const getAllContracts = async (
   _req: Request,
   res: Response,
@@ -52,7 +46,7 @@ export const getAllContracts = async (
   }
 }
 
-// Get contract by ID
+// ✅ Get contract by ID
 export const getContractById = async (
   req: Request,
   res: Response,
@@ -63,8 +57,6 @@ export const getContractById = async (
     if (!id) throw new BadRequestError('Contract ID is required')
 
     const contract = await contractService.getContractById(id)
-    if (!contract) throw new NotFoundError('Contract not found')
-
     return successMessage({
       res,
       data: contract,
@@ -75,30 +67,74 @@ export const getContractById = async (
   }
 }
 
-// Update contract
-export const updateContract = async (
+// ✅ Get contracts by client
+export const getContractsByClientId = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
-    if (!id) throw new BadRequestError('Contract ID is required')
+    const { clientId } = req.params
+    if (!clientId) throw new BadRequestError('Client ID is required')
 
-    const contract = await contractService.updateContract(id, req.body)
-    if (!contract) throw new NotFoundError('Contract not found')
-
+    const contracts = await contractService.getContractsByClientId(clientId)
     return successMessage({
       res,
-      data: contract,
-      message: 'Contract updated successfully',
+      data: contracts,
+      message: 'Client contracts retrieved successfully',
     })
   } catch (error) {
     next(error)
   }
 }
 
-// Delete contract
+// ✅ Get contracts by freelancer
+export const getContractsByFreelancerId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { freelancerId } = req.params
+    if (!freelancerId) throw new BadRequestError('Freelancer ID is required')
+
+    const contracts = await contractService.getcontractsByFreelancerId(
+      freelancerId
+    )
+    return successMessage({
+      res,
+      data: contracts,
+      message: 'Freelancer contracts retrieved successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// ✅ Update contract status
+export const updateContractStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params
+    const { status } = req.body
+    if (!id || !status)
+      throw new BadRequestError('Contract ID and status are required')
+
+    const updated = await contractService.updateContractStatus(id, status)
+    return successMessage({
+      res,
+      data: updated,
+      message: 'Contract status updated successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// ✅ Delete contract
 export const deleteContract = async (
   req: Request,
   res: Response,
@@ -108,12 +144,10 @@ export const deleteContract = async (
     const { id } = req.params
     if (!id) throw new BadRequestError('Contract ID is required')
 
-    const contract = await contractService.deleteContract(id)
-    if (!contract) throw new NotFoundError('Contract not found')
-
+    const deleted = await contractService.deleteContract(id)
     return successMessage({
       res,
-      data: contract,
+      data: deleted,
       message: 'Contract deleted successfully',
     })
   } catch (error) {
