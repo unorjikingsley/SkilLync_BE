@@ -6,6 +6,7 @@ import projectRoutes from './project.route';
 import proposalRoutes from './proposal.route';
 import contractRoutes from './contract.route';
 import messageRoutes from './message.route';
+import reviewRoutes from './review.route';
 
 const router = Router()
 
@@ -19,6 +20,7 @@ apiRouter.use('/projects', projectRoutes);
 apiRouter.use('/proposals', proposalRoutes);
 apiRouter.use('/contracts', contractRoutes);
 apiRouter.use('/messages', messageRoutes);
+apiRouter.use('/reviews', reviewRoutes);
 
 // Mount the API router under /api
 router.use('/api', apiRouter)

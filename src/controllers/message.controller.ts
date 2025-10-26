@@ -1,27 +1,22 @@
 import { Request, Response, NextFunction } from 'express'
 import * as messageService from '../services/message.service'
 import { successMessage } from '../utils/successMessage'
-import { BadRequestError, NotFoundError } from '../utils/errorHandler'
+import { BadRequestError } from '../utils/errorHandler'
 
-// Send a message
-export const sendMessage = async (
+// ✅ Create message
+export const createMessage = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { senderId, receiverId, content } = req.body
-    if (!senderId || !receiverId || !content) {
-      throw new BadRequestError(
-        'senderId, receiverId, and content are required'
-      )
-    }
-
-    const message = await messageService.sendMessage({
+    const message = await messageService.createMessage({
       senderId,
       receiverId,
       content,
     })
+
     return successMessage({
       res,
       data: message,
@@ -33,17 +28,14 @@ export const sendMessage = async (
   }
 }
 
-// List messages per user (inbox or sent)
-export const getAllMessagesByUser = async (
-  req: Request,
+// ✅ Get all messages
+export const getAllMessages = async (
+  _req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { userId } = req.params
-    if (!userId) throw new BadRequestError('userId is required')
-
-    const messages = await messageService.getMessagesByUser(userId)
+    const messages = await messageService.getAllMessages()
     return successMessage({
       res,
       data: messages,
@@ -54,41 +46,86 @@ export const getAllMessagesByUser = async (
   }
 }
 
-export const getInboxMessagesByUser = async (
+// ✅ Get conversation between two users
+export const getConversation = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { userId } = req.params
-    if (!userId) throw new BadRequestError('userId is required')
+    const { userId1, userId2 } = req.params
+    if (!userId1 || !userId2)
+      throw new BadRequestError('Both user IDs are required')
 
-    const messages = await messageService.getInboxMessagesByUser(userId)
+    const conversation = await messageService.getConversation(userId1, userId2)
     return successMessage({
       res,
-      data: messages,
-      message: 'Inbox messages retrieved successfully',
+      data: conversation,
+      message: 'Conversation retrieved',
     })
   } catch (error) {
     next(error)
   }
 }
 
-// Get sent messages
-export const getSentMessagesByUser = async (
+// ✅ Get messages by sender
+export const getMessagesBySender = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { userId } = req.params
-    if (!userId) throw new BadRequestError('userId is required')
+    const { senderId } = req.params
+    if (!senderId) throw new BadRequestError('Sender ID is required')
 
-    const messages = await messageService.getSentMessagesByUser(userId)
+    const messages = await messageService.getMessagesBySender(senderId)
     return successMessage({
       res,
       data: messages,
-      message: 'Sent messages retrieved successfully',
+      message: 'Messages retrieved successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// PATCH /messages/:id/edit
+export const editMessage = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const messageId = req.params.id
+    const { senderId, newContent } = req.body
+
+    if (!messageId || !senderId) {
+      throw new BadRequestError('Review ID and Reviewer ID are required')
+    }
+
+    const updatedMessage = await messageService.editMessage(messageId, senderId, newContent)
+
+    return successMessage({
+      res,
+      data: updatedMessage,
+      message: 'Message updated successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// ✅ Delete message
+export const deleteMessage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params
+    if (!id) throw new BadRequestError('Message ID is required')
+
+    const deleted = await messageService.deleteMessage(id)
+    return successMessage({
+      res,
+      data: deleted,
+      message: 'Message deleted successfully',
     })
   } catch (error) {
     next(error)
