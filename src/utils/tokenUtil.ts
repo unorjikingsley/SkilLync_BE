@@ -31,11 +31,11 @@ export const createRefreshToken = (userId: string): string => {
   return jwt.sign(payload, secret, options)
 }
 
-export const generateRefreshToken = (userId: string) => {
-  return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
-    expiresIn: REFRESH_TOKEN_EXPIRY,
-  })
-}
+// export const generateRefreshToke = (userId: string): string => {
+//   return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
+//     expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRY,
+//   })
+// }
 
 /**
  * Verify and decode a JWT token
