@@ -23,6 +23,9 @@ model User {
   lastName       String
   bio            String?
   profileImage   String?
+  profileImageId String?
+  isVerified     Boolean  @default(false)
+  verificationToken String?
   skills         Skill[]  @relation("UserSkills")
   gigs           Gig[]
   proposals      Proposal[]

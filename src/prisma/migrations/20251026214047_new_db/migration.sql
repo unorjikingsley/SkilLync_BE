@@ -20,6 +20,9 @@ CREATE TABLE "User" (
     "lastName" TEXT NOT NULL,
     "bio" TEXT,
     "profileImage" TEXT,
+    "profileImageId" TEXT,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "verificationToken" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -74,6 +77,7 @@ CREATE TABLE "Proposal" (
     "status" "ProposalStatus" NOT NULL DEFAULT 'PENDING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "Proposal_pkey" PRIMARY KEY ("id")
 );
