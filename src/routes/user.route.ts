@@ -4,7 +4,6 @@ import { authenticateUser } from '../middleware/auth.middleware';
 
 const router = Router()
 
-// router.post('/', userController.createUser)
 router.get('/users', authenticateUser, userController.getAllUsers)
 router.get('/:id', userController.getUserById)
 router.put('/:id', userController.updateUser)

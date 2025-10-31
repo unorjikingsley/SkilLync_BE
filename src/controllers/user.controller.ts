@@ -3,29 +3,6 @@ import * as userService from '../services/user.service'
 import { successMessage } from '../utils/successMessage'
 import { BadRequestError, NotFoundError } from '../utils/errorHandler'
 
-// export const createUser = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const { email, firstName, lastName, password } = req.body
-//     if (!email || !firstName || !lastName || !password)
-//       throw new BadRequestError('Missing required fields')
-
-//     const user = await userService.createUser(req.body)
-//     return successMessage({
-//       res,
-//       data: user,
-//       message: 'User created successfully',
-//       statusCode: 201,
-//     })
-//   } catch (error) {
-//     console.log('Error creating user:', error)
-//     next(error)
-//   }
-// }
-
 export const getAllUsers = async (
   _req: Request,
   res: Response,

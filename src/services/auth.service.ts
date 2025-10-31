@@ -130,6 +130,30 @@ export class AuthService {
     }
   }
 
+  // REFRESH ACCESS TOKEN
+  static async refresh(refreshToken: string) {
+    try {
+      // ✅ Verify refresh token using helper
+      const decoded = verifyRefreshToken(refreshToken)
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      })
+
+      if (!user) throw new Error('User not found.')
+
+      // ✅ Create a new access token (not refresh token again)
+      const newAccessToken = createJWT({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      })
+
+      return { accessToken: newAccessToken }
+    } catch (error) {
+      throw new Error('Invalid or expired refresh token.')
+    }
+  }
+
   // Login user (JWT + optional cookie)
   static async loginUser(data: LoginInput) {
     const { email, password } = data
