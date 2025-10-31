@@ -1,4 +1,4 @@
-import { BadRequestError } from '../utils/errorHandler';
+// import { BadRequestError } from '../utils/errorHandler';
 import prisma from '../db.config';
 import { User, Prisma } from '@prisma/client';
 import { findActiveUserByEmail, findActiveUserById } from '../utils/user.utils';
@@ -10,27 +10,22 @@ import { findActiveUserByEmail, findActiveUserById } from '../utils/user.utils';
  * @returns Promise<User>
  */
 
-export const createUser = async (data: Prisma.UserCreateInput): Promise<User> => {
-  try {
-    const existingUser = await findActiveUserByEmail(data.email)
+// export const createUser = async (data: Prisma.UserCreateInput): Promise<User> => {
+//   try {
+//     const existingUser = await findActiveUserByEmail(data.email)
 
-    if (existingUser) {
-      throw new BadRequestError('User with this email already exists')
-    }
+//     if (existingUser) {
+//       throw new BadRequestError('User with this email already exists')
+//     }
 
-    // Hash Password
-    // if (data.password){
-    //   data.password = await bcrypt.hash(data.password, 10);
-    // }
+//     const newUser = await prisma.user.create({ data })
 
-    const newUser = await prisma.user.create({ data })
-
-    return newUser
-  } catch (error) {
-    console.error('Create User Error:', error)
-    throw error //controller handles error
-  }
-}
+//     return newUser
+//   } catch (error) {
+//     console.error('Create User Error:', error)
+//     throw error //controller handles error
+//   }
+// }
 
 export const getAllUsers = async (): Promise<User[]> => {
   try {

@@ -26,6 +26,7 @@ model User {
   profileImageId String?
   isVerified     Boolean  @default(false)
   verificationToken String?
+  verificationTokenExpiresAt DateTime?
   skills         Skill[]  @relation("UserSkills")
   gigs           Gig[]
   proposals      Proposal[]

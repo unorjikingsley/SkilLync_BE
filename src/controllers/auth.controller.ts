@@ -53,7 +53,7 @@ export class AuthController {
    */
   static async verifyEmail(req: Request, res: Response, next: NextFunction) {
     try {
-      const { token } = req.params
+      const token = req.query.token as string
       if (!token || typeof token !== 'string') {
         throw new BadRequestError('Invalid verification token')
       }
@@ -72,13 +72,13 @@ export class AuthController {
    */
   static async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password, setCookie } = req.body
+      const { email, password } = req.body
+      const setCookie = req.body.setCookie ?? false
 
       // 🟩 Call service to authenticate user
       const { accessToken, refreshToken, user } = await AuthService.loginUser({
         email,
         password,
-        setCookie,
       })
 
       // 🟩 If `setCookie` is true, set HTTP-only cookies
@@ -118,8 +118,34 @@ export class AuthController {
   static async logout(req: Request, res: Response, next: NextFunction) {
     try {
       res.clearCookie('auth_token')
+      res.clearCookie('refresh_token')
       const result = await AuthService.logoutUser()
-      return res.status(200).json(result)
+      return res.status(StatusCodes.OK).json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * @desc Refresh access token
+   * @route POST /api/auth/refresh
+   * @access Public (requires valid refresh token)
+   */
+  static async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Prefer cookie if available, otherwise body
+      const refreshToken = req.cookies?.refresh_token || req.body.refreshToken
+
+      if (!refreshToken) {
+        throw new BadRequestError('Refresh token missing')
+      }
+
+      const result = await AuthService.refresh(refreshToken)
+
+      return res.status(StatusCodes.OK).json({
+        message: 'Access token refreshed successfully',
+        ...result,
+      })
     } catch (error) {
       next(error)
     }

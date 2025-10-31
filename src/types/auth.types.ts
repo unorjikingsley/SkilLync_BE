@@ -19,6 +19,6 @@ export interface LoginInput {
 
 export interface JWTPayload {
   id: string
-  email?: string
+  email: string
   role?: Role
 }

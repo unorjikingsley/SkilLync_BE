@@ -1,6 +1,9 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { JWTPayload } from '../types/auth.types';
 
+const ACCESS_TOKEN_EXPIRY = process.env.JWT_ACCESS_EXPIRES_IN || '1d'
+const REFRESH_TOKEN_EXPIRY = process.env.JWT_REFRESH_TOKEN_EXPIRES_IN || '7d'
+
 /**
  * Create a signed JWT token
  * @param payload - data to embed in token (e.g., user id, email, role)
@@ -12,7 +15,7 @@ export const createJWT = (payload: JWTPayload): string => {
 
   // Explicitly cast expiresIn to ms.StringValue (from jsonwebtoken types)  
   const options: SignOptions = {
-    expiresIn: (process.env.JWT_ACCESS_EXPIRES_IN || '1d') as any,
+    expiresIn: ACCESS_TOKEN_EXPIRY as any,
     //   expiresIn: process.env
     //     .JWT_EXPIRES_IN as unknown as jwt.SignOptions['expiresIn'],
   }
@@ -26,16 +29,10 @@ export const createRefreshToken = (userId: string): string => {
   const secret = process.env.JWT_REFRESH_SECRET as string
   const payload = { userId }
   const options: SignOptions = {
-    expiresIn: (process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d') as any
+    expiresIn: REFRESH_TOKEN_EXPIRY as any
   }
   return jwt.sign(payload, secret, options)
 }
-
-// export const generateRefreshToke = (userId: string): string => {
-//   return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
-//     expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRY,
-//   })
-// }
 
 /**
  * Verify and decode a JWT token

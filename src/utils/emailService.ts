@@ -9,20 +9,24 @@ const transporter = nodemailer.createTransport({
 })
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
+  try {
+    const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
 
-  const mailOptions = {
-    from: `"SkillLync" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: 'Verify your email address',
-    html: `
+    const mailOptions = {
+      from: `"SkillLync" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Verify your email address',
+      html: `
       <p>Welcome! Please verify your email by clicking the link below:</p>
       <a href="${verificationLink}" target="_blank">Verify Email</a>
       <p>If you didn't create an account, please ignore this message.</p>
     `,
-  }
+    }
 
-  await transporter.sendMail(mailOptions)
+    await transporter.sendMail(mailOptions)
+  } catch (error) {
+    console.error('Error sending verification email:', error)
+  }
 }
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
